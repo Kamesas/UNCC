@@ -14,8 +14,8 @@ import {
     const size = stat?.size;
     const buff = Buffer.alloc(stat?.size);
 
-    await file?.read(buff, 0, size, 0);
     const content = buff?.toString("utf-8");
+    await file?.read(buff, 0, size, 0);
     console.log("content -->", content);
 
     createFile({ content });
