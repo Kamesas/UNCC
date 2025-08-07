@@ -1,6 +1,8 @@
 import fs from "node:fs";
 import { info } from "../helpers/info.js";
 
+// syncWriteFile-time: 1.898s
+// Performance.now() 1928.21 ms
 export function syncWriteFile(fileName = "./files/sync.txt") {
   console.time("syncWriteFile-write-time");
   const file = fs.openSync(fileName, "w");
@@ -15,7 +17,4 @@ export function syncWriteFile(fileName = "./files/sync.txt") {
   fs.closeSync(file);
   console.timeEnd("syncWriteFile-write-time");
   info();
-
-  // syncWriteFile-time: 1.898s
-  // Performance.now() 1928.21 ms
 }

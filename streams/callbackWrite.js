@@ -15,3 +15,21 @@ export async function callbackWrite(fileName = "./files/callback.txt") {
     info();
   });
 }
+
+// callbackWrite-write-time: 1.796s
+// Performance.now(): 1828.74 ms
+
+// callbackWrite();
+// setImmediate(() => {
+//   console.log("setImmediate");
+// });
+
+// setTimeout(() => {
+//   console.log("timeout");
+// }, 10);
+
+// nextTick(() => {
+//   console.log("nextTick");
+// });
+
+// console.log("finish");
