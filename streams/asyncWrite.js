@@ -3,7 +3,6 @@ import { info } from "../helpers/info.js";
 
 // writeFile-write-time: 36.442s
 // Performance.now(): 36471.47 ms
-
 export async function asyncWrite(fileName = "./files/async.txt") {
   console.time("writeFile-write-time");
 

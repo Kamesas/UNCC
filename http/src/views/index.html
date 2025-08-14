@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTTP module</title>
+</head>
+
+<body>
+  <h1>HTTP module</h1>
+
+  <form action="/book" method="post">
+    <input type="text" name="title" placeholder="title">
+    <input type="text" name="description" placeholder="description">
+
+    <label>
+      <input type="radio" name="rating" value="bad"> Bad
+    </label>
+    <label>
+      <input type="radio" name="rating" value="not-bad"> Not Bad
+    </label>
+    <label>
+      <input type="radio" name="rating" value="good"> Good
+    </label>
+
+    <button type="submit">Add book</button>
+  </form>
+</body>
+
+</html>

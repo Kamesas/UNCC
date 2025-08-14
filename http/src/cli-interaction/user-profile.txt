@@ -1,0 +1,5 @@
+--- User Answers ---
+
+What is your name?: Alex
+What is your favorite programming language?: ts
+What city do you live in?: Poltava
