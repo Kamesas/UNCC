@@ -1,6 +1,4 @@
-import { Server } from "../../server.js";
-
-export function booksRoutes({ req, res }: Server) {
+export function booksRoutes({ req, res }: Http) {
   const body: Buffer[] = [];
   console.log("req.headers --->", req.headers);
 
