@@ -9,3 +9,11 @@ export function homeRoutes({ res }: Http) {
   res.statusCode = 200;
   res.end(html);
 }
+
+export const routes: Route[] = [
+  {
+    method: "GET",
+    path: "/",
+    handler: homeRoutes,
+  },
+];
