@@ -5,8 +5,10 @@ type CompiledRoute = Route & {
 
 export class Router {
   private compiledRoutes: CompiledRoute[] = [];
+  private prefix: string;
 
-  constructor(routes: Route[]) {
+  constructor(routes: Route[], prefix: string = "") {
+    this.prefix = prefix.endsWith("/") ? prefix.slice(0, -1) : prefix;
     this.compiledRoutes = this.compileRoutes(routes);
   }
 
@@ -15,7 +17,8 @@ export class Router {
       const paramNames = (route.path.match(/:[^/]+/g) || []).map((param) =>
         param.slice(1)
       );
-      const regexPattern = route.path.replace(/:[^/]+/g, "([^/]+)");
+      const fullPath = this.prefix + route.path;
+      const regexPattern = fullPath.replace(/:[^/]+/g, "([^/]+)");
       const regex = new RegExp(`^${regexPattern}$`);
       return { ...route, regex, paramNames };
     });

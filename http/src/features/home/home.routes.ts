@@ -10,7 +10,7 @@ export function homeRoutes({ res }: Http) {
   res.end(html);
 }
 
-export const routes: Route[] = [
+export const routes: Route<"/">[] = [
   {
     method: "GET",
     path: "/",

@@ -1,21 +1,4 @@
-import {
-  // Main book CRUD
-  getAllBooks,
-  getBookById,
-  createBook,
-  updateBook,
-  deleteBook,
-  partialUpdateBook,
-  getBookEditForm,
-  // Search
-  searchBooks,
-  // Categories
-  getBookCategories,
-  addBookCategory,
-  // Reviews
-  getBookReviews,
-  addBookReview,
-} from "./controllers";
+import * as bControllers from "./controllers";
 
 const paths = [
   "/books",
@@ -31,67 +14,62 @@ const paths = [
   "/books/:id/reviews/add",
 ] as const;
 
-export type Path = (typeof paths)[number];
+type Path = (typeof paths)[number];
 
-export const routes: Route[] = [
+export const routes: Route<Path>[] = [
   {
     method: "GET",
-    path: "/books/search" as Path,
-    handler: searchBooks,
+    path: "/books/search",
+    handler: bControllers?.searchBooks,
   },
   {
     method: "GET",
-    path: "/books/categories" as Path,
-    handler: getBookCategories,
+    path: "/books/categories",
+    handler: bControllers.getBookCategories,
   },
   {
     method: "POST",
-    path: "/books/categories/add" as Path,
-    handler: addBookCategory,
+    path: "/books/categories/add",
+    handler: bControllers.addBookCategory,
   },
   {
     method: "GET",
-    path: "/books" as Path,
-    handler: getAllBooks,
+    path: "/books",
+    handler: bControllers.getAllBooks,
   },
   {
     method: "POST",
-    path: "/books" as Path,
-    handler: createBook,
+    path: "/books",
+    handler: bControllers.createBook,
   },
   {
     method: "GET",
-    path: "/books/:id" as Path,
-    handler: getBookById,
-  },
-  {
-    method: "GET",
-    path: "/books/edit/:id" as Path,
-    handler: getBookEditForm,
+    path: "/books/:id",
+    handler: bControllers.getBookById,
   },
   {
     method: "PUT",
-    path: "/books/:id/update" as Path,
-    handler: updateBook,
+    path: "/books/:id/update",
+    handler: bControllers.updateBook,
   },
   {
     method: "PATCH",
-    path: "/books/:id/partial-update" as Path,
-    handler: partialUpdateBook,
+    path: "/books/:id/partial-update",
+    handler: bControllers.partialUpdateBook,
   },
   {
     method: "DELETE",
-    path: "/books/delete/:id" as Path,
-    handler: deleteBook,
+    path: "/books/delete/:id",
+    handler: bControllers.deleteBook,
   },
   {
     method: "GET",
-    path: "/books/:id/reviews" as Path,
-    handler: getBookReviews,
+    path: "/books/:id/reviews",
+    handler: bControllers.getBookReviews,
   },
   {
     method: "POST",
-    path: "/books/:id/reviews/add" as Path,
-    handler: addBookReview,
+    path: "/books/:id/reviews/add",
+    handler: bControllers.addBookReview,
   },
 ];

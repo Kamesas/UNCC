@@ -1,13 +1,8 @@
-import { extractParamsFromUrl } from "../../../helpers/urls";
-import { mockBooks } from "./books.mock";
-import { Path } from "../books.routes";
+import { mockBooks } from "../../../data/books";
 import { idSchema } from "../books.validation";
 
-export function getBookById({ req, res }: Http) {
-  const { id } = extractParamsFromUrl<{ id: string }>(
-    req.url || "",
-    "/books/:id" as Path
-  );
+export async function getBookById({ res, params }: Http) {
+  const { id } = params || {};
 
   const result = idSchema.safeParse({ id });
 
@@ -24,7 +19,12 @@ export function getBookById({ req, res }: Http) {
   }
 
   try {
-    const book = mockBooks.find((book) => book.id === Number(id));
+    const book = await new Promise((resolve) => {
+      setTimeout(() => {
+        const book = mockBooks.find((book) => book.id === Number(id));
+        resolve(book);
+      }, 2000);
+    });
 
     res.setHeader("Content-Type", "application/json");
 
@@ -43,10 +43,22 @@ export function getBookById({ req, res }: Http) {
   }
 }
 
-export function getAllBooks({ res }: Http) {
-  res.setHeader("Content-Type", "application/json");
-  res.statusCode = 200;
-  res.end(JSON.stringify(mockBooks));
+export async function getAllBooks({ res }: Http) {
+  try {
+    const books: typeof mockBooks = await new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(mockBooks);
+      }, 2000);
+    });
+
+    res.setHeader("Content-Type", "application/json");
+    res.statusCode = 200;
+    res.end(JSON.stringify({ books, total: books.length }));
+  } catch (error) {
+    res.setHeader("Content-Type", "application/json");
+    res.statusCode = 500;
+    res.end(JSON.stringify({ message: "Internal Server Error", error }));
+  }
 }
 
 export function createBook({ req, res }: Http) {
@@ -73,11 +85,8 @@ export function createBook({ req, res }: Http) {
   });
 }
 
-export function updateBook({ req, res }: Http) {
-  const { id } = extractParamsFromUrl<{ id: string }>(
-    req.url || "",
-    "/books/:id/update" as Path
-  );
+export function updateBook({ res, params }: Http) {
+  const { id } = params || {};
 
   const result = idSchema.safeParse({ id });
 
@@ -93,11 +102,8 @@ export function updateBook({ req, res }: Http) {
   res.end(JSON.stringify({ message: `Book ${id} updated successfully` }));
 }
 
-export function deleteBook({ req, res }: Http) {
-  const { id } = extractParamsFromUrl<{ id: string }>(
-    req.url || "",
-    "/books/delete/:id" as Path
-  );
+export function deleteBook({ res, params }: Http) {
+  const { id } = params || {};
 
   const result = idSchema.safeParse({ id });
 
@@ -113,11 +119,8 @@ export function deleteBook({ req, res }: Http) {
   res.end(JSON.stringify({ message: `Book ${id} deleted successfully` }));
 }
 
-export function partialUpdateBook({ req, res }: Http) {
-  const { id } = extractParamsFromUrl<{ id: string }>(
-    req.url || "",
-    "/books/:id/partial-update" as Path
-  );
+export function partialUpdateBook({ res, params }: Http) {
+  const { id } = params || {};
 
   const result = idSchema.safeParse({ id });
 
@@ -133,8 +136,4 @@ export function partialUpdateBook({ req, res }: Http) {
   res.end(
     JSON.stringify({ message: `Book ${id} partially updated successfully` })
   );
-}
-
-export function getBookEditForm({ req, res }: Http) {
-  res.end(`Showing edit form for book ID: ${req?.url}`);
 }

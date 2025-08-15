@@ -7,7 +7,7 @@ const PORT = 3000;
 
 async function startServer() {
   const allRoutes = await loadRoutes();
-  const router = new Router(allRoutes);
+  const router = new Router(allRoutes, "/api");
 
   const httpServer = http.createServer((req, res) => {
     router.handle({ req, res });
