@@ -11,6 +11,7 @@ declare global {
     method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
     path: T;
     handler: (ctx: Http) => void;
+    skipPrefix?: boolean;
   };
 }
 

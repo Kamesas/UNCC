@@ -17,7 +17,8 @@ export class Router {
       const paramNames = (route.path.match(/:[^/]+/g) || []).map((param) =>
         param.slice(1)
       );
-      const fullPath = this.prefix + route.path;
+
+      const fullPath = route.skipPrefix ? route.path : this.prefix + route.path;
       const regexPattern = fullPath.replace(/:[^/]+/g, "([^/]+)");
       const regex = new RegExp(`^${regexPattern}$`);
       return { ...route, regex, paramNames };

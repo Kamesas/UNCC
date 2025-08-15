@@ -15,5 +15,6 @@ export const routes: Route<"/">[] = [
     method: "GET",
     path: "/",
     handler: homeRoutes,
+    skipPrefix: true,
   },
 ];
