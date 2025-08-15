@@ -1,17 +1,21 @@
 import {
-  createBook,
+  // Main book CRUD
   getAllBooks,
   getBookById,
-  getBookEditForm,
+  createBook,
   updateBook,
   deleteBook,
   partialUpdateBook,
+  getBookEditForm,
+  // Search
   searchBooks,
+  // Categories
   getBookCategories,
   addBookCategory,
+  // Reviews
   getBookReviews,
   addBookReview,
-} from "./book.controllers";
+} from "./controllers";
 
 const paths = [
   "/books",
