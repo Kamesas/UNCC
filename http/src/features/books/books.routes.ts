@@ -1,15 +1,58 @@
-function getBookById({ res, req }: Http) {
-  res.end(`Getting book with ID: ${req?.url}`);
+import { extractParamsFromUrl } from "../../helpers/urls";
+import { mockBooks } from "./books.mock";
+
+const paths = ["/books", "/books/:id", "/books/edit/:id"] as const;
+type Path = (typeof paths)[number];
+
+import { z } from "zod";
+
+const idSchema = z.object({
+  id: z.string().regex(/^\d+$/, "id must be a number"),
+});
+function getBookById({ req, res }: Http) {
+  const { id } = extractParamsFromUrl<{ id: string }>(
+    req.url || "",
+    "/books/:id" as Path
+  );
+
+  const result = idSchema.safeParse({ id });
+
+  if (!result.success) {
+    res.statusCode = 400;
+    res.setHeader("Content-Type", "application/json");
+    res.end(
+      JSON.stringify({
+        error: result.error.issues,
+        message: result.error.message,
+      })
+    );
+    return;
+  }
+
+  try {
+    const book = mockBooks.find((book) => book.id === Number(id));
+
+    res.setHeader("Content-Type", "application/json");
+
+    if (!book) {
+      res.statusCode = 404;
+      res.end(JSON.stringify({ message: `Book id ${id} not found` }));
+      return;
+    }
+
+    res.statusCode = 200;
+    res.end(JSON.stringify(book));
+  } catch (error) {
+    res.setHeader("Content-Type", "application/json");
+    res.statusCode = 500;
+    res.end(JSON.stringify({ message: "Internal Server Error", error }));
+  }
 }
 
 function getAllBooks({ res }: Http) {
   res.setHeader("Content-Type", "application/json");
-  res.end(
-    JSON.stringify([
-      { id: 1, title: "Book One" },
-      { id: 2, title: "Book Two" },
-    ])
-  );
+  res.statusCode = 200;
+  res.end(JSON.stringify(mockBooks));
 }
 
 function createBook({ req, res }: Http) {
@@ -43,22 +86,22 @@ function getBookEditForm({ req, res }: Http) {
 export const routes: Route[] = [
   {
     method: "GET",
-    path: "/book",
+    path: "/books",
     handler: getAllBooks,
   },
   {
     method: "GET",
-    path: "/book/:id",
+    path: "/books/:id",
     handler: getBookById,
   },
   {
     method: "POST",
-    path: "/book",
+    path: "/books",
     handler: createBook,
   },
   {
     method: "GET",
-    path: "/book/edit/:id",
+    path: "/books/edit/:id",
     handler: getBookEditForm,
   },
 ];
