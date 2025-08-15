@@ -1,107 +1,100 @@
-import { extractParamsFromUrl } from "../../helpers/urls";
-import { mockBooks } from "./books.mock";
+import {
+  createBook,
+  getAllBooks,
+  getBookById,
+  getBookEditForm,
+  // updateBook,
+  // deleteBook,
+  // partialUpdateBook,
+  // searchBooks,
+  // getBookCategories,
+  // addBookCategory,
+  // getBookReviews,
+  // addBookReview,
+} from "./book.controllers";
 
-const paths = ["/books", "/books/:id", "/books/edit/:id"] as const;
-type Path = (typeof paths)[number];
+const paths = [
+  "/books",
+  "/books/:id",
+  "/books/edit/:id",
+  "/books/delete/:id",
+  "/books/search",
+  "/books/:id/update",
+  "/books/:id/partial-update",
+  "/books/categories",
+  "/books/categories/add",
+  "/books/:id/reviews",
+  "/books/:id/reviews/add",
+] as const;
 
-import { z } from "zod";
-
-const idSchema = z.object({
-  id: z.string().regex(/^\d+$/, "id must be a number"),
-});
-function getBookById({ req, res }: Http) {
-  const { id } = extractParamsFromUrl<{ id: string }>(
-    req.url || "",
-    "/books/:id" as Path
-  );
-
-  const result = idSchema.safeParse({ id });
-
-  if (!result.success) {
-    res.statusCode = 400;
-    res.setHeader("Content-Type", "application/json");
-    res.end(
-      JSON.stringify({
-        error: result.error.issues,
-        message: result.error.message,
-      })
-    );
-    return;
-  }
-
-  try {
-    const book = mockBooks.find((book) => book.id === Number(id));
-
-    res.setHeader("Content-Type", "application/json");
-
-    if (!book) {
-      res.statusCode = 404;
-      res.end(JSON.stringify({ message: `Book id ${id} not found` }));
-      return;
-    }
-
-    res.statusCode = 200;
-    res.end(JSON.stringify(book));
-  } catch (error) {
-    res.setHeader("Content-Type", "application/json");
-    res.statusCode = 500;
-    res.end(JSON.stringify({ message: "Internal Server Error", error }));
-  }
-}
-
-function getAllBooks({ res }: Http) {
-  res.setHeader("Content-Type", "application/json");
-  res.statusCode = 200;
-  res.end(JSON.stringify(mockBooks));
-}
-
-function createBook({ req, res }: Http) {
-  const body: Buffer[] = [];
-  console.log("req.headers --->", req.headers);
-
-  req.on("data", (chunk) => {
-    console.log("chunk --->", chunk);
-    body.push(chunk);
-  });
-
-  req.on("end", () => {
-    console.log("body --->", body);
-    const bodyString = Buffer.concat(body).toString();
-    console.log("bodyString --->", bodyString);
-
-    res.setHeader("Content-Type", "application/json");
-    res.statusCode = 201;
-    res.end(
-      JSON.stringify({
-        message: "Book created",
-      })
-    );
-  });
-}
-
-function getBookEditForm({ req, res }: Http) {
-  res.end(`Showing edit form for book ID: ${req?.url}`);
-}
+export type Path = (typeof paths)[number];
 
 export const routes: Route[] = [
+  // Basic CRUD Operations
   {
     method: "GET",
-    path: "/books",
+    path: "/books" as Path,
     handler: getAllBooks,
   },
   {
     method: "GET",
-    path: "/books/:id",
+    path: "/books/:id" as Path,
     handler: getBookById,
   },
   {
     method: "POST",
-    path: "/books",
+    path: "/books" as Path,
     handler: createBook,
   },
+  // {
+  //   method: "PUT",
+  //   path: "/books/:id/update" as Path,
+  //   handler: updateBook,
+  // },
+  // {
+  //   method: "PATCH",
+  //   path: "/books/:id/partial-update" as Path,
+  //   handler: partialUpdateBook,
+  // },
+  // {
+  //   method: "DELETE",
+  //   path: "/books/delete/:id" as Path,
+  //   handler: deleteBook,
+  // },
+
+  // Additional Functionality
+  // {
+  //   method: "GET",
+  //   path: "/books/search" as Path,
+  //   handler: searchBooks,
+  // },
   {
     method: "GET",
-    path: "/books/edit/:id",
+    path: "/books/edit/:id" as Path,
     handler: getBookEditForm,
   },
+
+  // Categories Management
+  // {
+  //   method: "GET",
+  //   path: "/books/categories" as Path,
+  //   handler: getBookCategories,
+  // },
+  // {
+  //   method: "POST",
+  //   path: "/books/categories/add" as Path,
+  //   handler: addBookCategory,
+  // },
+
+  // Reviews Management
+  // {
+  //   method: "GET",
+  //   path: "/books/:id/reviews" as Path,
+  //   handler: getBookReviews,
+  // },
+  // {
+  //   method: "POST",
+  //   path: "/books/:id/reviews/add" as Path,
+  //   handler: addBookReview,
+  // },
 ];
