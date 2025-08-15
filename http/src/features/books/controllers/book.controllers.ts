@@ -1,63 +1,56 @@
-import { mockBooks } from "../../../data/books";
-import { idSchema } from "../books.validation";
+import { sendResponse } from "../../../helpers/sendResponse";
+import { idValidator } from "../books.validation";
+import { findBookById, findAllBooks } from "../models/book.models";
 
-export async function getBookById({ res, params }: Http) {
-  const { id } = params || {};
+export async function getBookById(http: Http) {
+  const id = http.params?.id;
+  const validation = idValidator(http.params?.id);
 
-  const result = idSchema.safeParse({ id });
-
-  if (!result.success) {
-    res.statusCode = 400;
-    res.setHeader("Content-Type", "application/json");
-    res.end(
-      JSON.stringify({
-        error: result.error.issues,
-        message: result.error.message,
-      })
-    );
+  if (!validation.success) {
+    sendResponse({
+      res: http.res,
+      status: 400,
+      data: { errors: validation.errors },
+    });
     return;
   }
 
   try {
-    const book = await new Promise((resolve) => {
-      setTimeout(() => {
-        const book = mockBooks.find((book) => book.id === Number(id));
-        resolve(book);
-      }, 2000);
-    });
-
-    res.setHeader("Content-Type", "application/json");
+    const book = await findBookById(Number(id));
 
     if (!book) {
-      res.statusCode = 404;
-      res.end(JSON.stringify({ message: `Book id ${id} not found` }));
+      sendResponse({
+        data: { message: `Book id ${id} not found` },
+        res: http.res,
+        status: 404,
+      });
       return;
     }
 
-    res.statusCode = 200;
-    res.end(JSON.stringify(book));
+    sendResponse({ data: book, res: http.res, status: 200 });
   } catch (error) {
-    res.setHeader("Content-Type", "application/json");
-    res.statusCode = 500;
-    res.end(JSON.stringify({ message: "Internal Server Error", error }));
+    sendResponse({
+      status: 500,
+      res: http.res,
+      data: { message: "Internal Server Error" },
+    });
   }
 }
 
-export async function getAllBooks({ res }: Http) {
+export async function getAllBooks(http: Http) {
   try {
-    const books: typeof mockBooks = await new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(mockBooks);
-      }, 2000);
+    const books = await findAllBooks();
+    sendResponse({
+      data: { books, total: books.length },
+      res: http.res,
+      status: 200,
     });
-
-    res.setHeader("Content-Type", "application/json");
-    res.statusCode = 200;
-    res.end(JSON.stringify({ books, total: books.length }));
   } catch (error) {
-    res.setHeader("Content-Type", "application/json");
-    res.statusCode = 500;
-    res.end(JSON.stringify({ message: "Internal Server Error", error }));
+    sendResponse({
+      status: 500,
+      res: http.res,
+      data: { message: "Internal Server Error" },
+    });
   }
 }
 
@@ -85,55 +78,62 @@ export function createBook({ req, res }: Http) {
   });
 }
 
-export function updateBook({ res, params }: Http) {
-  const { id } = params || {};
+export function updateBook(http: Http) {
+  const id = http.params?.id;
+  const validation = idValidator(id);
 
-  const result = idSchema.safeParse({ id });
-
-  if (!result.success) {
-    res.statusCode = 400;
-    res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify({ error: "Invalid book ID" }));
+  if (!validation.success) {
+    sendResponse({
+      res: http.res,
+      status: 400,
+      data: { errors: validation.errors },
+    });
     return;
   }
 
-  res.setHeader("Content-Type", "application/json");
-  res.statusCode = 200;
-  res.end(JSON.stringify({ message: `Book ${id} updated successfully` }));
+  sendResponse({
+    data: { message: `Book ${id} updated successfully` },
+    res: http.res,
+    status: 200,
+  });
 }
 
-export function deleteBook({ res, params }: Http) {
-  const { id } = params || {};
+export function deleteBook(http: Http) {
+  const id = http.params?.id;
+  const validation = idValidator(id);
 
-  const result = idSchema.safeParse({ id });
-
-  if (!result.success) {
-    res.statusCode = 400;
-    res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify({ error: "Invalid book ID" }));
+  if (!validation.success) {
+    sendResponse({
+      res: http.res,
+      status: 400,
+      data: { errors: validation.errors },
+    });
     return;
   }
 
-  res.setHeader("Content-Type", "application/json");
-  res.statusCode = 200;
-  res.end(JSON.stringify({ message: `Book ${id} deleted successfully` }));
+  sendResponse({
+    data: { message: `Book ${id} deleted successfully` },
+    res: http.res,
+    status: 200,
+  });
 }
 
-export function partialUpdateBook({ res, params }: Http) {
-  const { id } = params || {};
+export function partialUpdateBook(http: Http) {
+  const id = http.params?.id;
+  const validation = idValidator(id);
 
-  const result = idSchema.safeParse({ id });
-
-  if (!result.success) {
-    res.statusCode = 400;
-    res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify({ error: "Invalid book ID" }));
+  if (!validation.success) {
+    sendResponse({
+      res: http.res,
+      status: 400,
+      data: { errors: validation.errors },
+    });
     return;
   }
 
-  res.setHeader("Content-Type", "application/json");
-  res.statusCode = 200;
-  res.end(
-    JSON.stringify({ message: `Book ${id} partially updated successfully` })
-  );
+  sendResponse({
+    data: { message: `Book ${id} partially updated successfully` },
+    res: http.res,
+    status: 200,
+  });
 }

@@ -1,22 +1,6 @@
 import * as bControllers from "./controllers";
 
-const paths = [
-  "/books",
-  "/books/:id",
-  "/books/edit/:id",
-  "/books/delete/:id",
-  "/books/search",
-  "/books/:id/update",
-  "/books/:id/partial-update",
-  "/books/categories",
-  "/books/categories/add",
-  "/books/:id/reviews",
-  "/books/:id/reviews/add",
-] as const;
-
-type Path = (typeof paths)[number];
-
-export const routes: Route<Path>[] = [
+export const routes: Route[] = [
   {
     method: "GET",
     path: "/books/search",

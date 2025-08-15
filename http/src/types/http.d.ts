@@ -7,9 +7,9 @@ declare global {
     params?: Record<string, string>;
   };
 
-  type Route<T extends string = ""> = {
+  type Route = {
     method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
-    path: T;
+    path: string;
     handler: (ctx: Http) => void;
     skipPrefix?: boolean;
   };

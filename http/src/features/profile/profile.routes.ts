@@ -4,7 +4,7 @@ function profileRoutes({ res }: Http) {
   res.end("<h1>Profile</h1>");
 }
 
-export const routes: Route<"/profile">[] = [
+export const routes: Route[] = [
   {
     method: "GET",
     path: "/profile",
