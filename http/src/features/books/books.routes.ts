@@ -1,10 +1,10 @@
-function getBookById(ctx: Http) {
-  ctx.res.end(`Getting book with ID: ${ctx.req?.url}`);
+function getBookById({ res, req }: Http) {
+  res.end(`Getting book with ID: ${req?.url}`);
 }
 
-function getAllBooks(ctx: Http) {
-  ctx.res.setHeader("Content-Type", "application/json");
-  ctx.res.end(
+function getAllBooks({ res }: Http) {
+  res.setHeader("Content-Type", "application/json");
+  res.end(
     JSON.stringify([
       { id: 1, title: "Book One" },
       { id: 2, title: "Book Two" },
@@ -12,9 +12,7 @@ function getAllBooks(ctx: Http) {
   );
 }
 
-function createBook(ctx: Http) {
-  const { res, req } = ctx;
-
+function createBook({ req, res }: Http) {
   const body: Buffer[] = [];
   console.log("req.headers --->", req.headers);
 
@@ -38,8 +36,8 @@ function createBook(ctx: Http) {
   });
 }
 
-function getBookEditForm(ctx: Http) {
-  ctx.res.end(`Showing edit form for book ID: ${ctx.req?.url}`);
+function getBookEditForm({ req, res }: Http) {
+  res.end(`Showing edit form for book ID: ${req?.url}`);
 }
 
 export const routes: Route[] = [
