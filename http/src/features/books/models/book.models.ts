@@ -1,19 +1,29 @@
-import { Book, mockBooks } from "../../../data/books";
+import path from "path";
+import fsPromise from "fs/promises";
+import { PROJECT_ROOT } from "../../../config/paths.js";
+import { Book } from "../types";
 
-const TIME_OUT = 2000;
-export async function findBookById(id: number): Promise<Book | undefined> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const book = mockBooks.find((book) => book.id === id);
-      resolve(book);
-    }, TIME_OUT);
-  });
+const dbFilePath = path.join(PROJECT_ROOT, "db", "books.json");
+
+export async function getAllBooks(): Promise<Book[]> {
+  const data = await fsPromise.readFile(dbFilePath, "utf-8");
+  return JSON.parse(data) as Book[];
 }
 
-export async function findAllBooks(): Promise<typeof mockBooks> {
-  return await new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(mockBooks);
-    }, TIME_OUT);
-  });
+export async function getBookById(id: number): Promise<Book | undefined> {
+  const books = await getAllBooks();
+  return books.find((b) => b.id === id);
+}
+
+export async function createBook(book: Book) {
+  try {
+    const books = await getAllBooks();
+    const updatedBooks = [...books, { ...book, id: Date.now() }];
+    await fsPromise.writeFile(dbFilePath, JSON.stringify(updatedBooks));
+
+    return updatedBooks;
+  } catch (error) {
+    console.log("error", error);
+    throw error;
+  }
 }

@@ -1,19 +1,13 @@
-import { extractParamsFromUrl } from "../../../helpers/urls";
-import { Path } from "../books.routes";
-import { idSchema } from "../books.validation";
+import { sendResponse } from "../../../helpers/httpHelpers.js";
+import { idValidator } from "../books.validation.js";
 
-export function getBookReviews({ req, res }: Http) {
-  const { id } = extractParamsFromUrl<{ id: string }>(
-    req.url || "",
-    "/books/:id/reviews" as Path
-  );
+export function getBookReviews(http: Http) {
+  const id = http.params?.id;
 
-  const result = idSchema.safeParse({ id });
+  const validation = idValidator(http.params?.id);
 
-  if (!result.success) {
-    res.statusCode = 400;
-    res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify({ error: "Invalid book ID" }));
+  if (!validation.success) {
+    sendResponse(http.res, 400, { errors: validation.errors });
     return;
   }
 
@@ -34,26 +28,19 @@ export function getBookReviews({ req, res }: Http) {
     },
   ];
 
-  res.setHeader("Content-Type", "application/json");
-  res.statusCode = 200;
-  res.end(JSON.stringify(mockReviews));
+  sendResponse(http.res, 200, mockReviews);
 }
 
-export function addBookReview({ req, res }: Http) {
-  const { id } = extractParamsFromUrl<{ id: string }>(
-    req.url || "",
-    "/books/:id/reviews/add" as Path
-  );
+export function addBookReview(http: Http) {
+  const { req, res } = http;
+  const id = http.params?.id;
 
-  const result = idSchema.safeParse({ id });
+  const validation = idValidator(http.params?.id);
 
-  if (!result.success) {
-    res.statusCode = 400;
-    res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify({ error: "Invalid book ID" }));
+  if (!validation.success) {
+    sendResponse(http.res, 400, { errors: validation.errors });
     return;
   }
-
   const body: Buffer[] = [];
 
   req.on("data", (chunk) => {

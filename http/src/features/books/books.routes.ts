@@ -1,4 +1,4 @@
-import * as bControllers from "./controllers";
+import * as bControllers from "./controllers/index.js";
 
 export const routes: Route[] = [
   {
@@ -19,32 +19,32 @@ export const routes: Route[] = [
   {
     method: "GET",
     path: "/books",
-    handler: bControllers.getAllBooks,
+    handler: bControllers.handleGetAllBooks,
   },
   {
     method: "POST",
     path: "/books",
-    handler: bControllers.createBook,
+    handler: bControllers.handleCreateBook,
   },
   {
     method: "GET",
     path: "/books/:id",
-    handler: bControllers.getBookById,
+    handler: bControllers.handleGetBookById,
   },
   {
     method: "PUT",
     path: "/books/:id/update",
-    handler: bControllers.updateBook,
+    handler: bControllers.handleUpdateBook,
   },
   {
     method: "PATCH",
     path: "/books/:id/partial-update",
-    handler: bControllers.partialUpdateBook,
+    handler: bControllers.handlePartialUpdateBook,
   },
   {
     method: "DELETE",
     path: "/books/delete/:id",
-    handler: bControllers.deleteBook,
+    handler: bControllers.handleDeleteBook,
   },
   {
     method: "GET",

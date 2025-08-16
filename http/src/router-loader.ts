@@ -1,15 +1,23 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import * as fs from "fs";
 import * as path from "path";
-import { SRC_DIR } from "./config/paths.js";
+import { PROJECT_ROOT } from "./config/paths.js";
 
-const featuresDir = path.join(SRC_DIR, "features");
+const isDev = process.env.NODE_ENV === "development";
+
+export const FEATURES_DIR = isDev
+  ? path.join(PROJECT_ROOT, "src", "features")
+  : path.join(PROJECT_ROOT, "dist", "features");
 
 export async function loadRoutes(): Promise<Route[]> {
   let allRoutes: Route[] = [];
-  const features = fs.readdirSync(featuresDir);
+  const features = fs.readdirSync(FEATURES_DIR);
 
   for (const feature of features) {
-    const routeFile = path.join(featuresDir, feature, `${feature}.routes.js`);
+    const routeFile = path.join(FEATURES_DIR, feature, `${feature}.routes.js`);
+
     try {
       const routeModule = await import(`file://${routeFile}`);
 
