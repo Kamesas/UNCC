@@ -40,10 +40,38 @@ export async function updateBook(id: number, book: Book) {
       return b;
     });
 
-    console.log("updatedBooks", updatedBooks);
-
     await fsPromise.writeFile(dbFilePath, JSON.stringify(updatedBooks));
     return updatedBook;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function deleteBook(id: number) {
+  try {
+    const books = await getAllBooks();
+    const updatedBooks = books.filter((b) => b.id !== id);
+    await fsPromise.writeFile(dbFilePath, JSON.stringify(updatedBooks));
+    return updatedBooks;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function replaceBook(id: number, book: Book) {
+  try {
+    const books = await getAllBooks();
+    let replacedBook: Book | undefined;
+    const updatedBooks = books.map((b) => {
+      if (b.id === id) {
+        replacedBook = { ...book, id: id };
+        return replacedBook;
+      }
+      return b;
+    });
+
+    await fsPromise.writeFile(dbFilePath, JSON.stringify(updatedBooks));
+    return replacedBook;
   } catch (error) {
     throw error;
   }

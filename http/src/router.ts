@@ -48,9 +48,9 @@ export class Router {
     );
 
     if (matchResult) {
-      const ctx: Http = { req, res, params: matchResult.params };
+      const http: Http = { req, res, params: matchResult.params };
       try {
-        matchResult.route.handler(ctx);
+        matchResult.route.handler(http);
       } catch (error) {
         console.error("Route handler error:", error);
         if (!res.headersSent) {

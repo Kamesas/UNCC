@@ -32,14 +32,14 @@ export const routes: Route[] = [
     handler: bControllers.handleGetBookById,
   },
   {
-    method: "PUT",
+    method: "PATCH",
     path: "/books/:id/update",
     handler: bControllers.handleUpdateBook,
   },
   {
-    method: "PATCH",
-    path: "/books/:id/partial-update",
-    handler: bControllers.handlePartialUpdateBook,
+    method: "PUT",
+    path: "/books/:id/replace",
+    handler: bControllers.handleReplaceBook,
   },
   {
     method: "DELETE",

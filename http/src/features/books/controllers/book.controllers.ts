@@ -1,4 +1,3 @@
-import { da } from "zod/v4/locales";
 import { sendResponse, parseJsonBody } from "../../../helpers/httpHelpers.js";
 import { validateBookCreation, idValidator } from "../books.validation.js";
 import {
@@ -6,6 +5,8 @@ import {
   getAllBooks,
   createBook,
   updateBook,
+  deleteBook,
+  replaceBook,
 } from "../models/book.models.js";
 import { Book } from "../types.js";
 
@@ -59,7 +60,7 @@ export async function handleCreateBook(http: Http) {
 
   try {
     const books = await createBook(parsed.data);
-    sendResponse(http.res, 201, { data: books });
+    sendResponse(http.res, 201, { data: books, total: books.length });
   } catch (error) {
     sendResponse(http.res, 500, { message: "Something went wrong" });
   }
@@ -96,7 +97,7 @@ export async function handleUpdateBook(http: Http) {
   }
 }
 
-export function handleDeleteBook(http: Http) {
+export async function handleDeleteBook(http: Http) {
   const id = http.params?.id;
   const validation = idValidator(id);
 
@@ -104,18 +105,42 @@ export function handleDeleteBook(http: Http) {
     sendResponse(http.res, 400, { errors: validation.errors });
     return;
   }
-
-  sendResponse(http.res, 200, { message: `Book ${id} deleted successfully` });
+  try {
+    const updatedBooks = await deleteBook(Number(id));
+    sendResponse(http.res, 200, {
+      data: updatedBooks,
+      total: updatedBooks.length,
+    });
+  } catch (error) {
+    sendResponse(http.res, 500, { message: "Something went wrong" });
+  }
 }
 
-export function handlePartialUpdateBook(http: Http) {
+export async function handleReplaceBook(http: Http) {
   const id = http.params?.id;
-  const validation = idValidator(id);
+  const parsed = await parseJsonBody<Book>(http.req);
 
+  if (!parsed.success) {
+    sendResponse(http.res, 400, { error: parsed.error });
+    return;
+  }
+
+  const idValidation = idValidator(id);
+  if (!idValidation.success) {
+    sendResponse(http.res, 400, { errors: idValidation.errors });
+    return;
+  }
+
+  const validation = validateBookCreation(parsed.data);
   if (!validation.success) {
     sendResponse(http.res, 400, { errors: validation.errors });
     return;
   }
 
-  sendResponse(http.res, 200, { message: `Book ${id} updated successfully` });
+  try {
+    const updatedBook = await replaceBook(Number(id), parsed.data);
+    sendResponse(http.res, 200, { data: updatedBook });
+  } catch (error) {
+    sendResponse(http.res, 500, { message: "Something went wrong" });
+  }
 }
