@@ -27,3 +27,24 @@ export async function createBook(book: Book) {
     throw error;
   }
 }
+
+export async function updateBook(id: number, book: Book) {
+  try {
+    const books = await getAllBooks();
+    let updatedBook: Book | undefined;
+    const updatedBooks = books.map((b) => {
+      if (b.id === id) {
+        updatedBook = { ...b, ...book };
+        return updatedBook;
+      }
+      return b;
+    });
+
+    console.log("updatedBooks", updatedBooks);
+
+    await fsPromise.writeFile(dbFilePath, JSON.stringify(updatedBooks));
+    return updatedBook;
+  } catch (error) {
+    throw error;
+  }
+}

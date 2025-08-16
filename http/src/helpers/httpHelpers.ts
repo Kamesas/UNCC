@@ -7,6 +7,10 @@ export async function parseJsonBody<T = unknown>(
     const bodyBuffer = await buffer(req);
     const bodyString = bodyBuffer.toString();
 
+    if (!bodyString) {
+      return { success: false, error: "Empty body" };
+    }
+
     return { success: true, data: JSON.parse(bodyString) as T };
   } catch {
     return { success: false, error: "Invalid JSON" };

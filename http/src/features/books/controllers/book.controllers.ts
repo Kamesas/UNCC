@@ -1,6 +1,12 @@
+import { da } from "zod/v4/locales";
 import { sendResponse, parseJsonBody } from "../../../helpers/httpHelpers.js";
 import { validateBookCreation, idValidator } from "../books.validation.js";
-import { getBookById, getAllBooks, createBook } from "../models/book.models.js";
+import {
+  getBookById,
+  getAllBooks,
+  createBook,
+  updateBook,
+} from "../models/book.models.js";
 import { Book } from "../types.js";
 
 export async function handleGetBookById(http: Http) {
@@ -36,38 +42,58 @@ export async function handleGetAllBooks(http: Http) {
   }
 }
 
-export async function handleCreateBook({ req, res }: Http) {
-  const parsed = await parseJsonBody<Book>(req);
+export async function handleCreateBook(http: Http) {
+  const parsed = await parseJsonBody<Book>(http.req);
 
   if (!parsed.success) {
-    sendResponse(res, 400, { error: parsed.error });
+    sendResponse(http.res, 400, { error: parsed.error });
     return;
   }
 
   const validation = validateBookCreation(parsed.data);
 
   if (!validation.success) {
-    sendResponse(res, 400, { errors: validation.errors });
+    sendResponse(http.res, 400, { errors: validation.errors });
     return;
   }
 
   try {
     const books = await createBook(parsed.data);
-    sendResponse(res, 201, { data: books });
+    sendResponse(http.res, 201, { data: books });
   } catch (error) {
-    sendResponse(res, 500, { message: "Something went wrong" });
+    sendResponse(http.res, 500, { message: "Something went wrong" });
   }
 }
 
-export function handleUpdateBook(http: Http) {
+export async function handleUpdateBook(http: Http) {
   const id = http.params?.id;
-  const validation = idValidator(id);
+  const parsed = await parseJsonBody<Book>(http.req);
 
+  if (!parsed.success) {
+    sendResponse(http.res, 400, { error: parsed.error });
+    return;
+  }
+
+  const idValidation = idValidator(id);
+  if (!idValidation.success) {
+    sendResponse(http.res, 400, { errors: idValidation.errors });
+    return;
+  }
+
+  const validation = validateBookCreation(parsed.data);
   if (!validation.success) {
     sendResponse(http.res, 400, { errors: validation.errors });
     return;
   }
-  sendResponse(http.res, 200, { message: `Book ${id} updated successfully` });
+
+  try {
+    const updatedBook = await updateBook(Number(id), parsed.data);
+    console.log("updatedBook", updatedBook);
+
+    sendResponse(http.res, 200, { data: updatedBook });
+  } catch (error) {
+    sendResponse(http.res, 500, { message: "Something went wrong" });
+  }
 }
 
 export function handleDeleteBook(http: Http) {
