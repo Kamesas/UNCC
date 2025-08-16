@@ -1,7 +1,7 @@
 import path from "path";
 import fsPromise from "fs/promises";
 import { PROJECT_ROOT } from "../../../config/paths.js";
-import { Book } from "../types";
+import { Book } from "../types.js";
 
 const dbFilePath = path.join(PROJECT_ROOT, "db", "books.json");
 

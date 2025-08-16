@@ -1,7 +1,7 @@
 import { sendResponse, parseJsonBody } from "../../../helpers/httpHelpers.js";
 import { validateBookCreation, idValidator } from "../books.validation.js";
 import { getBookById, getAllBooks, createBook } from "../models/book.models.js";
-import { Book } from "../types";
+import { Book } from "../types.js";
 
 export async function handleGetBookById(http: Http) {
   const id = http.params?.id;
@@ -28,10 +28,7 @@ export async function handleGetBookById(http: Http) {
 
 export async function handleGetAllBooks(http: Http) {
   try {
-    console.log("handleGetAllBooks");
-
     const books = await getAllBooks();
-    console.log("books", books);
 
     sendResponse(http.res, 200, { data: books, total: books.length });
   } catch (error) {
