@@ -29,6 +29,7 @@ export async function handleGetBookById(http: Http) {
 
     sendResponse(http.res, 200, { data: book });
   } catch (error) {
+    console.log("error", error);
     sendResponse(http.res, 500, { message: "Internal Server Error" });
   }
 }
@@ -39,6 +40,7 @@ export async function handleGetAllBooks(http: Http) {
 
     sendResponse(http.res, 200, { data: books, total: books.length });
   } catch (error) {
+    console.log("error", error);
     sendResponse(http.res, 500, { message: "Internal Server Error" });
   }
 }
@@ -62,6 +64,7 @@ export async function handleCreateBook(http: Http) {
     const books = await createBook(parsed.data);
     sendResponse(http.res, 201, { data: books, total: books.length });
   } catch (error) {
+    console.log("error", error);
     sendResponse(http.res, 500, { message: "Something went wrong" });
   }
 }
@@ -89,10 +92,9 @@ export async function handleUpdateBook(http: Http) {
 
   try {
     const updatedBook = await updateBook(Number(id), parsed.data);
-    console.log("updatedBook", updatedBook);
-
     sendResponse(http.res, 200, { data: updatedBook });
   } catch (error) {
+    console.log("error", error);
     sendResponse(http.res, 500, { message: "Something went wrong" });
   }
 }
@@ -112,6 +114,7 @@ export async function handleDeleteBook(http: Http) {
       total: updatedBooks.length,
     });
   } catch (error) {
+    console.log("error", error);
     sendResponse(http.res, 500, { message: "Something went wrong" });
   }
 }
@@ -141,6 +144,7 @@ export async function handleReplaceBook(http: Http) {
     const updatedBook = await replaceBook(Number(id), parsed.data);
     sendResponse(http.res, 200, { data: updatedBook });
   } catch (error) {
+    console.log("error", error);
     sendResponse(http.res, 500, { message: "Something went wrong" });
   }
 }
