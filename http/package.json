@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "dotenv": "^17.2.1",
+    "ollama": "^0.5.17",
     "zod": "^4.0.17"
   }
 }
