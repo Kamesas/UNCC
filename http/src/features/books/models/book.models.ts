@@ -3,7 +3,7 @@ import fsPromise from "fs/promises";
 import { PROJECT_ROOT } from "../../../config/paths.js";
 import { Book } from "../types.js";
 
-const dbFilePath = path.join(PROJECT_ROOT, "db", "books.json");
+const dbFilePath = path.join(PROJECT_ROOT, "db", "books33.json");
 
 export async function getAllBooks(): Promise<Book[]> {
   const data = await fsPromise.readFile(dbFilePath, "utf-8");
