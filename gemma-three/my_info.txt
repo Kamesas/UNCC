@@ -1,0 +1,4 @@
+User name is Alex.
+He is 37 years old, Ukrainian.
+Actively learning English and Node.js.
+He is React/Next.js developer, likes typescript.
